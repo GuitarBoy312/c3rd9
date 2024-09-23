@@ -25,6 +25,8 @@ if 'previous_meaning' not in st.session_state:
     st.session_state.previous_meaning = None
 if 'new_word' not in st.session_state:
     st.session_state.new_word, st.session_state.new_meaning = random.choice(list(words.items()))
+if 'show_next' not in st.session_state:
+    st.session_state.show_next = False
 
 # 이전 단어와 의미 가져오기
 word = st.session_state.new_word
@@ -38,23 +40,27 @@ while len(options) < 4:
         options.append(option)
 random.shuffle(options)
 
-if quiz_type == '영어 -> 한국어':
-    st.write(f"영어 단어: {word}")
-    answer = st.radio("정답을 선택하세요:", options)
-    if st.button("제출"):
-        if answer == meaning:
-            st.success("정답입니다!")
-        else:
-            st.error(f"틀렸습니다. 정답은 {meaning}입니다.")
-        # 새로운 단어 선택
-        st.session_state.new_word, st.session_state.new_meaning = random.choice(list(words.items()))
+if not st.session_state.show_next:
+    if quiz_type == '영어 -> 한국어':
+        st.write(f"영어 단어: {word}")
+        answer = st.radio("정답을 선택하세요:", options)
+        if st.button("제출"):
+            if answer == meaning:
+                st.success("정답입니다!")
+            else:
+                st.error(f"틀렸습니다. 정답은 {meaning}입니다.")
+            st.session_state.show_next = True
+    else:
+        st.write(f"한국어 뜻: {meaning}")
+        answer = st.radio("정답을 선택하세요:", options)
+        if st.button("제출"):
+            if answer == word:
+                st.success("정답입니다!")
+            else:
+                st.error(f"틀렸습니다. 정답은 {word}입니다.")
+            st.session_state.show_next = True
 else:
-    st.write(f"한국어 뜻: {meaning}")
-    answer = st.radio("정답을 선택하세요:", options)
-    if st.button("제출"):
-        if answer == word:
-            st.success("정답입니다!")
-        else:
-            st.error(f"틀렸습니다. 정답은 {word}입니다.")
-        # 새로운 단어 선택
+    if st.button("다음 문제"):
         st.session_state.new_word, st.session_state.new_meaning = random.choice(list(words.items()))
+        st.session_state.show_next = False
+        st.experimental_rerun()
