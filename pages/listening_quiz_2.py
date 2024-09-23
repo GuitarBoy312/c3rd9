@@ -52,17 +52,21 @@ def split_dialogue(text):
     return speakers
 
 def text_to_speech(text, voice):
-    response = client.audio.speech.create(
-        model="tts-1",
-        voice=voice,
-        input=text
-    )
-    
-    audio_bytes = response.content
-    audio_base64 = base64.b64encode(audio_bytes).decode()
-    audio_tag = f'<audio controls><source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3"></audio>'
-    
-    return audio_tag
+    try:
+        response = client.audio.speech.create(
+            model="tts-1",
+            voice=voice,
+            input=text
+        )
+        
+        audio_bytes = response.content
+        audio_base64 = base64.b64encode(audio_bytes).decode()
+        audio_tag = f'<audio controls><source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3"></audio>'
+        
+        return audio_tag
+    except Exception as e:
+        st.error(f"음성 생성에 실패했습니다: {e}")
+        return ""
 
 def generate_dialogue_audio(dialogue):
     speakers = split_dialogue(dialogue)
@@ -72,7 +76,8 @@ def generate_dialogue_audio(dialogue):
         text = " ".join(lines)
         voice = "onyx" if speaker == "A" else "echo"  # A는 여성 목소리, B는 남성 목소리
         audio_tag = text_to_speech(text, voice)
-        audio_tags.append(audio_tag)
+        if audio_tag:
+            audio_tags.append(audio_tag)
     
     return "".join(audio_tags)
 
