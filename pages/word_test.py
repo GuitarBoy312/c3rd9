@@ -21,9 +21,17 @@ quiz_type = st.radio("퀴즈 타입을 선택하세요:", ('영어 -> 한국어'
 # 랜덤 단어 선택
 word, meaning = random.choice(list(words.items()))
 
+# 정답과 오답 선택
+options = [meaning] if quiz_type == '영어 -> 한국어' else [word]
+while len(options) < 4:
+    option = random.choice(list(words.values() if quiz_type == '영어 -> 한국어' else words.keys()))
+    if option not in options:
+        options.append(option)
+random.shuffle(options)
+
 if quiz_type == '영어 -> 한국어':
     st.write(f"영어 단어: {word}")
-    answer = st.text_input("한국어 뜻을 입력하세요:")
+    answer = st.radio("정답을 선택하세요:", options)
     if st.button("제출"):
         if answer == meaning:
             st.success("정답입니다!")
@@ -31,7 +39,7 @@ if quiz_type == '영어 -> 한국어':
             st.error(f"틀렸습니다. 정답은 {meaning}입니다.")
 else:
     st.write(f"한국어 뜻: {meaning}")
-    answer = st.text_input("영어 단어를 입력하세요:")
+    answer = st.radio("정답을 선택하세요:", options)
     if st.button("제출"):
         if answer == word:
             st.success("정답입니다!")
