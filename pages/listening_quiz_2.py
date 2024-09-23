@@ -65,6 +65,8 @@ def text_to_speech(text, voice):
         
         return audio_tag
     except Exception as e:
+        # 디버깅을 위한 로그 추가
+        print(f"음성 생성 중 오류 발생: {e}")
         st.error(f"음성 생성에 실패했습니다: {e}")
         return ""
 
@@ -74,7 +76,7 @@ def generate_dialogue_audio(dialogue):
     
     for speaker, lines in speakers.items():
         text = " ".join(lines)
-        voice = "alloy" if speaker == "A" else "nova"  # A는 여성 목소리, B는 남성 목소리
+        voice = "onyx" if speaker == "A" else "echo"  # A는 여성 목소리, B는 남성 목소리
         audio_tag = text_to_speech(text, voice)
         if audio_tag:
             audio_tags.append(audio_tag)
