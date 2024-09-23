@@ -27,13 +27,13 @@ def generate_question():
         correct_answer = meaning
         options = random.sample(list(words.values()), 3)
         if correct_answer not in options:
-            options[random.randint(0, 2)] = correct_answer
+            options.append(correct_answer)
     else:
         question = f"'{meaning}'의 영어 단어는 무엇인가요?"
         correct_answer = word
         options = random.sample(list(words.keys()), 3)
         if correct_answer not in options:
-            options[random.randint(0, 2)] = correct_answer
+            options.append(correct_answer)
 
     random.shuffle(options)
     prompt = f"""
