@@ -28,12 +28,20 @@ def generate_question():
         options = random.sample(list(words.values()), 3)
         if correct_answer not in options:
             options.append(correct_answer)
+        while len(options) < 4:
+            extra_option = random.choice(list(words.values()))
+            if extra_option not in options:
+                options.append(extra_option)
     else:
         question = f"'{meaning}'의 영어 단어는 무엇인가요?"
         correct_answer = word
         options = random.sample(list(words.keys()), 3)
         if correct_answer not in options:
             options.append(correct_answer)
+        while len(options) < 4:
+            extra_option = random.choice(list(words.keys()))
+            if extra_option not in options:
+                options.append(extra_option)
 
     random.shuffle(options)
     prompt = f"""
@@ -125,8 +133,6 @@ def main():
         st.write(question)
 
         st.divider()
-        st.write(passage)
-
         
         st.subheader("다음 중 알맞은 답을 골라보세요.")
         for i, option in enumerate(options, 1):
