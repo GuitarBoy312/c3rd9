@@ -15,25 +15,21 @@ SYSTEM_MESSAGE = {
     "content": '''
     너는 초등학교 영어교사야. 나는 초등학생이고, 나와 영어로 대화하는 연습을 해 줘. 영어공부와 관계없는 질문에는 대답할 수 없어. 그리고 나는 무조건 영어로 말할거야. 내 발음이 좋지 않더라도 영어로 인식하도록 노력해 봐.            
     [대화의 제목]
-    What color is it?
+    It's very tall.
     [지시]
-    1. 내가 너에게 "What color is it?" 이라고 질문을 할거야. 
-    2. 너는 내 질문을 듣고 아래에 주어진 대답 중 하나를 무작위로 선택해서 대답을 해.
-    3. 그 후, 너는 "What color is it?" 이라고 질문해. 질문할 때 마지막에 💚,🤍,🖤,💛,💔,💙 이 6개의 이모지 중 하나를 질문 끝에 무작위로 매번 바꿔가며 붙여. 매번 이모지의 색깔을 바꿔줘.
-    그러면 내가 이모지의 색을 보고 대답할거야.
-    4. 내가 또 질문을 하면 이번에는 다른 색깔을 선택해서 대답해.
+    1. 내가 너에게 "Look at the...." 이라고 제안을 할거야. 
+    2. 너는 내 제안을 듣고 짝지어진 대답을 해.
+    3. 그 후, 너는 "Look at the...." 이라고 제안해. 제안할 때 마지막에 🐤🦁🐯🐘🦓🦒 6개의 이모지를 질문 끝에 알맞게 붙여. 매번 다른 동물을 보라고 제안해 줘.
+    그러면 내가 알맞은 대답을 할거야.
+    4. 내가 또 제안을 하면 알맞은 대답을 선택해서 대답해.
     5. 내가 그만하자고 할 때까지 계속 주고 받으며 대화하자.
-    [질문예시]
-    - What color is it?💛
-    - What color is it?🖤
-    - What color is it?🤍
-    [대답]
-    - It's black.
-    - It's green.
-    - It's red.
-    - It's yellow.
-    - It's white.
-    - It's blue.
+    [제안과 대답]
+❶ M: Look at the bird. - G: It’s small.
+❷ M: Look at the lion. - G: It’s big.
+❸ M: Look at the tiger. - G: It’s small.
+❹ M: Look at the elephant. - G: It’s big.
+❺ M: Look at the zebra. - G: It’s cute.
+❻ M: Look at the giraffe. - G: It’s tall.
     '''
 }
 
@@ -96,7 +92,7 @@ def text_to_speech_openai(text):
 
 # Streamlit UI
 st.header("✨인공지능 영어대화 선생님 잉글링👩‍🏫")
-st.subheader("💚💙🤍색을 물어보는 대화하기🖤💛💔")
+st.subheader("🦝동물의 생김새와 크기 묘사하기🦩")
 st.divider()
 
 # 처음부터 다시하기 버튼
@@ -120,21 +116,16 @@ with st.expander("❗❗ 글상자를 펼쳐 사용방법을 읽어보세요 �
     """
     ,  unsafe_allow_html=True)
     st.divider()
-    st.write("다음 보기와 같이 잉글링에게 질문해 보세요.")
+    st.write("다음 보기와 같이 잉글링에게 제안과 대답을 해 보세요.")
     st.markdown('''
-    🔸What color is it?
+    ❶ M: Look at the bird. - G: It’s small.<br>
+❷ M: Look at the lion. - G: It’s big.<br>
+❸ M: Look at the tiger. - G: It’s small.<br>
+❹ M: Look at the elephant. - G: It’s big.<br>
+❺ M: Look at the zebra. - G: It’s cute.<br>
+❻ M: Look at the giraffe. - G: It’s tall.<br>
+    ''', unsafe_allow_html=True)
 
-    ''', unsafe_allow_html=True)
-    st.divider()
-    st.write("잉글링의 질문을 듣고, 다음 보기 중 골라서 대답해 보세요.")
-    st.markdown('''
-    🖤 It's black.<br>
-    💚 It's green.<br>
-    💖 It's red.<br>
-    💛 It's yellow.<br>
-    🤍 It's white.<br>
-    💙 It's blue.<br>
-    ''', unsafe_allow_html=True)
     
 # 버튼 배치
 col1, col2 = st.columns([1,1])
