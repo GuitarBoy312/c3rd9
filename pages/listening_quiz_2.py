@@ -8,22 +8,41 @@ import re
 client = OpenAI(api_key=st.secrets["openai_api_key"])
 
 def generate_question():
-    question_format = random.choice(["이 동물의 모습은 어떤가요?", "어떤 동물에 대해 이야기 했나요?"])
+    conversations = [
+        ("Look at the bird.🐤", "It’s small."),
+        ("Look at the lion.🦁", "It’s big."),
+        ("Look at the tiger.🐅", "It’s small."),
+        ("Look at the elephant.🐘", "It’s big."),
+        ("Look at the zebra.🦓", "It’s cute."),
+        ("Look at the giraffe.🦒", "It’s tall.")
+    ]
+    
+    questions = [
+        "이 동물의 모습은 어떤가요?",
+        "어떤 동물에 대해 이야기 했나요?"
+    ]
+    
+    selected_conversation = random.choice(conversations)
+    selected_question = random.choice(questions)
+    
     key_expression = f"""
-❶ A: Look at the bird.🐤 - B: It’s small.
-❷ A: Look at the lion.🦁 - B: It’s big.
-❸ A: Look at the tiger.🐅 - B: It’s small.
-❹ A: Look at the elephant.🐘 - B: It’s big.
-❺ A: Look at the zebra.🦓 - B: It’s cute.
-❻ A: Look at the giraffe.🦒 - B: It’s tall.
+A: {selected_conversation[0]}
+B: {selected_conversation[1]}
 """
-    prompt = f"""{key_expression}의 대화 중 하나를 읽어주세요. 
+    prompt = f"""{key_expression}과 같은 구문을 사용하는 CEFR A1 수준의 간단한 영어 대화를 생성해주세요. 
+    영어 대화를 생성할 때, 마지막 대화 내용은 알려주지 말고 대화 내용에 관한 객관식 질문으로 만들어야 합니다. 
     그 후 대화 내용에 관한 객관식 질문을 한국어로 만들어주세요.  
     조건: 문제의 정답은 1개입니다.  
-
+    영어 대화는 A와 B가 각각 1번씩 말하고 끝납니다.
+    A는 다음과 같이 한문장을 말하세요.
+    B는 다음과 같이 한문장을 말하세요.
+    형식:
+    [영어 대화]
+    A: {selected_conversation[0]}
+    B: {selected_conversation[1]}
 
     [한국어 질문]
-    조건: {question_format}을 만들어야 합니다.
+    조건: {selected_question}을 만들어야 합니다.
     질문: (한국어로 된 질문) 이 때, 선택지는 한국어로 제공됩니다.
     A. (선택지)
     B. (선택지)
@@ -33,7 +52,7 @@ def generate_question():
     """
 
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4-0125-preview",
         messages=[{"role": "user", "content": prompt}]
     )
 
@@ -52,23 +71,17 @@ def split_dialogue(text):
     return speakers
 
 def text_to_speech(text, voice):
-    try:
-        response = client.audio.speech.create(
-            model="tts-1",
-            voice=voice,
-            input=text
-        )
-        
-        audio_bytes = response.content
-        audio_base64 = base64.b64encode(audio_bytes).decode()
-        audio_tag = f'<audio controls><source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3"></audio>'
-        
-        return audio_tag
-    except Exception as e:
-        # 디버깅을 위한 로그 추가
-        print(f"음성 생성 중 오류 발생: {e}")
-        st.error(f"음성 생성에 실패했습니다: {e}")
-        return ""
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice=voice,
+        input=text
+    )
+    
+    audio_bytes = response.content
+    audio_base64 = base64.b64encode(audio_bytes).decode()
+    audio_tag = f'<audio controls><source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3"></audio>'
+    
+    return audio_tag
 
 def generate_dialogue_audio(dialogue):
     speakers = split_dialogue(dialogue)
@@ -76,10 +89,9 @@ def generate_dialogue_audio(dialogue):
     
     for speaker, lines in speakers.items():
         text = " ".join(lines)
-        voice = "onyx" if speaker == "A" else "echo"  # A는 여성 목소리, B는 남성 목소리
+        voice = "alloy" if speaker == "A" else "echo"  # A는 여성 목소리, B는 남성 목소리
         audio_tag = text_to_speech(text, voice)
-        if audio_tag:
-            audio_tags.append(audio_tag)
+        audio_tags.append(audio_tag)
     
     return "".join(audio_tags)
 
@@ -97,7 +109,7 @@ def generate_explanation(question, correct_answer, user_answer, dialogue):
     """
 
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4-0125-preview",
         messages=[{"role": "user", "content": prompt}]
     )
 
@@ -107,7 +119,7 @@ def generate_explanation(question, correct_answer, user_answer, dialogue):
 
 # 메인 화면 구성
 st.header("✨인공지능 영어 퀴즈 선생님 퀴즐링🕵️‍♂️")
-st.subheader("❓동물의 크기와 모습에 관한 퀴즈")
+st.markdown("**❓어제 한 일에 대한 듣기 퀴즈**")
 st.divider()
 
 #확장 설명
@@ -136,32 +148,29 @@ if st.button("새 문제 만들기"):
     
     full_content = generate_question()
     
-    if "[한국어 질문]" in full_content:
-        dialogue, question_part = full_content.split("[한국어 질문]")
-        
-        question_lines = question_part.strip().split("\n")
-        question = question_lines[0].replace("질문:", "").strip() if question_lines else ""
-        options = question_lines[1:5] if len(question_lines) > 1 else []
-        correct_answer = ""
-        
-        for line in question_lines:
-            if line.startswith("정답:"):
-                correct_answer = line.replace("정답:", "").strip()
-                break
-        
-        st.session_state.question = question
-        st.session_state.dialogue = dialogue.strip()
-        st.session_state.options = options
-        st.session_state.correct_answer = correct_answer
-        st.session_state.question_generated = True
-        
-        # 새 대화에 대한 음성 생성 (남녀 목소리 구분)
-        st.session_state.audio_tags = generate_dialogue_audio(st.session_state.dialogue)
-        
-        # 페이지 새로고침
-        st.rerun()
-    else:
-        st.error("질문 생성에 실패했습니다. 다시 시도해주세요.")
+    dialogue, question_part = full_content.split("[한국어 질문]")
+    
+    question_lines = question_part.strip().split("\n")
+    question = question_lines[0].replace("질문:", "").strip() if question_lines else ""
+    options = question_lines[1:5] if len(question_lines) > 1 else []
+    correct_answer = ""
+    
+    for line in question_lines:
+        if line.startswith("정답:"):
+            correct_answer = line.replace("정답:", "").strip()
+            break
+    
+    st.session_state.question = question
+    st.session_state.dialogue = dialogue.strip()
+    st.session_state.options = options
+    st.session_state.correct_answer = correct_answer
+    st.session_state.question_generated = True
+    
+    # 새 대화에 대한 음성 생성 (남녀 목소리 구분)
+    st.session_state.audio_tags = generate_dialogue_audio(st.session_state.dialogue)
+    
+    # 페이지 새로고침
+    st.rerun()
 
 if 'question_generated' in st.session_state and st.session_state.question_generated:
     st.markdown("### 질문")
