@@ -8,7 +8,7 @@ import re
 client = OpenAI(api_key=st.secrets["openai_api_key"])
 
 def generate_question():
-    question_format = random.choice(["이 동물의 모습은 어떤가요?","어떤 동물에 대해 이야기 했나요?"])
+    question_format = random.choice(["이 동물의 모습은 어떤가요?", "어떤 동물에 대해 이야기 했나요?"])
     key_expression = f"""
 ❶ A: Look at the bird.🐤 - B: It’s small.
 ❷ A: Look at the lion.🦁 - B: It’s big.
@@ -70,7 +70,7 @@ def generate_dialogue_audio(dialogue):
     
     for speaker, lines in speakers.items():
         text = " ".join(lines)
-        voice = "nova" if speaker == "A" else "echo"  # A는 여성 목소리, B는 남성 목소리
+        voice = "onyx" if speaker == "A" else "echo"  # A는 여성 목소리, B는 남성 목소리
         audio_tag = text_to_speech(text, voice)
         audio_tags.append(audio_tag)
     
@@ -129,29 +129,32 @@ if st.button("새 문제 만들기"):
     
     full_content = generate_question()
     
-    dialogue, question_part = full_content.split("[한국어 질문]")
-    
-    question_lines = question_part.strip().split("\n")
-    question = question_lines[0].replace("질문:", "").strip() if question_lines else ""
-    options = question_lines[1:5] if len(question_lines) > 1 else []
-    correct_answer = ""
-    
-    for line in question_lines:
-        if line.startswith("정답:"):
-            correct_answer = line.replace("정답:", "").strip()
-            break
-    
-    st.session_state.question = question
-    st.session_state.dialogue = dialogue.strip()
-    st.session_state.options = options
-    st.session_state.correct_answer = correct_answer
-    st.session_state.question_generated = True
-    
-    # 새 대화에 대한 음성 생성 (남녀 목소리 구분)
-    st.session_state.audio_tags = generate_dialogue_audio(st.session_state.dialogue)
-    
-    # 페이지 새로고침
-    st.rerun()
+    if "[한국어 질문]" in full_content:
+        dialogue, question_part = full_content.split("[한국어 질문]")
+        
+        question_lines = question_part.strip().split("\n")
+        question = question_lines[0].replace("질문:", "").strip() if question_lines else ""
+        options = question_lines[1:5] if len(question_lines) > 1 else []
+        correct_answer = ""
+        
+        for line in question_lines:
+            if line.startswith("정답:"):
+                correct_answer = line.replace("정답:", "").strip()
+                break
+        
+        st.session_state.question = question
+        st.session_state.dialogue = dialogue.strip()
+        st.session_state.options = options
+        st.session_state.correct_answer = correct_answer
+        st.session_state.question_generated = True
+        
+        # 새 대화에 대한 음성 생성 (남녀 목소리 구분)
+        st.session_state.audio_tags = generate_dialogue_audio(st.session_state.dialogue)
+        
+        # 페이지 새로고침
+        st.rerun()
+    else:
+        st.error("질문 생성에 실패했습니다. 다시 시도해주세요.")
 
 if 'question_generated' in st.session_state and st.session_state.question_generated:
     st.markdown("### 질문")
