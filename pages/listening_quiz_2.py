@@ -8,12 +8,15 @@ import re
 client = OpenAI(api_key=st.secrets["openai_api_key"])
 
 def generate_question():
-    answer1 = random.choice(["It's red.", "It's black.", "It's white.", "It's green.", "It's blue.", "It's yellow."])       
-    question_format = "대화를 듣고 무슨 색인지 묻는 질문"
+    question_format = "대화를 듣고 무슨 동물인지 또는 어떤 특징이 있는지 묻는 질문"
     
     key_expression = f"""
-A: Look at the.... What color is it?
-B: {answer1}
+❶ A: Look at the bird.🐤 - B: It’s small.
+❷ A: Look at the lion.🦁 - B: It’s big.
+❸ A: Look at the tiger.🐅 - B: It’s small.
+❹ A: Look at the elephant.🐘 - B: It’s big.
+❺ A: Look at the zebra.🦓 - B: It’s cute.
+❻ A: Look at the giraffe.🦒 - B: It’s tall.
 """
     prompt = f"""{key_expression}과 같은 구문을 사용하는 CEFR A1 수준의 간단한 영어 대화를 생성해주세요. 
     영어 대화를 생성할 때, 마지막 대화 내용은 알려주지 말고 대화 내용에 관한 객관식 질문으로 만들어야 합니다. 
@@ -24,7 +27,7 @@ B: {answer1}
     B는 다음과 같이 한문장으로 말하세요.
     형식:
     [영어 대화]
-    A: Look at the .... What color is it?
+    A: Look at the .... 
     B: It's....
 
     [한국어 질문]
@@ -38,7 +41,7 @@ B: {answer1}
     """
 
     response = client.chat.completions.create(
-        model="gpt-4-0125-preview",
+        model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}]
     )
 
@@ -75,7 +78,7 @@ def generate_dialogue_audio(dialogue):
     
     for speaker, lines in speakers.items():
         text = " ".join(lines)
-        voice = "alloy" if speaker == "A" else "echo"  # A는 여성 목소리, B는 남성 목소리
+        voice = "onyx" if speaker == "A" else "onix"  # A는 여성 목소리, B는 남성 목소리
         audio_tag = text_to_speech(text, voice)
         audio_tags.append(audio_tag)
     
@@ -95,7 +98,7 @@ def generate_explanation(question, correct_answer, user_answer, dialogue):
     """
 
     response = client.chat.completions.create(
-        model="gpt-4-0125-preview",
+        model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}]
     )
 
@@ -105,7 +108,7 @@ def generate_explanation(question, correct_answer, user_answer, dialogue):
 
 # 메인 화면 구성
 st.header("✨인공지능 영어 퀴즈 선생님 퀴즐링🕵️‍♂️")
-st.markdown("**❓어제 한 일에 대한 듣기 퀴즈**")
+st.subheader("❓동물의 크기와 모습에 관한 퀴즈")
 st.divider()
 
 #확장 설명
