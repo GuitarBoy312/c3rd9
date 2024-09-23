@@ -8,7 +8,7 @@ import re
 client = OpenAI(api_key=st.secrets["openai_api_key"])
 
 def generate_question():
-    question_format = "대화를 듣고 무슨 동물인지 또는 어떤 특징이 있는지 묻는 질문"
+    question_format = random.choice("이 동물의 모습은 어떤가요?","어떤 동물에 대해 이야기 했나요?")
     
     key_expression = f"""
 ❶ A: Look at the bird.🐤 - B: It’s small.
