@@ -29,8 +29,7 @@ def generate_question():
 A: {selected_conversation[0]}
 B: {selected_conversation[1]}
 """
-    prompt = f"""{key_expression}과 같은 구문을 사용하는 CEFR A1 수준의 간단한 영어 대화를 생성해주세요. 
-    영어 대화를 생성할 때, 마지막 대화 내용은 알려주지 말고 대화 내용에 관한 객관식 질문으로 만들어야 합니다. 
+    prompt = f"""{key_expression}을 생성해주세요. 
     그 후 대화 내용에 관한 객관식 질문을 한국어로 만들어주세요.  
     조건: 문제의 정답은 1개입니다.  
     영어 대화는 A와 B가 각각 1번씩 말하고 끝납니다.
