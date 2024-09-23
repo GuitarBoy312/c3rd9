@@ -18,16 +18,10 @@ def generate_question():
 ❺ A: Look at the zebra.🦓 - B: It’s cute.
 ❻ A: Look at the giraffe.🦒 - B: It’s tall.
 """
-    prompt = f"""{key_expression}의 대화 중 하나와 같은 대화를 생성해주세요. 
+    prompt = f"""{key_expression}의 대화 중 하나를 읽어주세요. 
     그 후 대화 내용에 관한 객관식 질문을 한국어로 만들어주세요.  
     조건: 문제의 정답은 1개입니다.  
-    영어 대화는 A와 B가 각각 1번씩 말하고 끝납니다.
-    A는 다음과 같이 한 문장을 말하세요.
-    B는 다음과 같이 한문장으로 말하세요.
-    형식:
-    [영어 대화]
-    A: Look at the .... 
-    B: It's....
+
 
     [한국어 질문]
     조건: {question_format}을 만들어야 합니다.
