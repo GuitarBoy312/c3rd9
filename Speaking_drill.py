@@ -25,7 +25,7 @@ SYSTEM_MESSAGE = {
     5. 내가 그만하자고 할 때까지 계속 주고 받으며 대화하자.
     [질문]
     Can you swim?🏊‍♀️ 
-`   Can you sing?🎤 
+`    Can you sing?🎤 
     Can you dance?💃 
     Can you run?🏃‍♀️ 
     Can you walk?🚶‍♀️ 
@@ -122,17 +122,17 @@ with st.expander("❗❗ 글상자를 펼쳐 사용방법을 읽어보세요 �
     st.divider()
     st.write("다음 보기와 같이 잉글링에게 질문과 대답을 해 보세요.")
     st.markdown('''
-    [질문]]<br>
+    [질문]
     Can you swim?🏊‍♀️<br>
-    Can you sing?🎤       
+    Can you sing?🎤<br> 
     Can you dance?💃<br> 
     Can you run?🏃‍♀️<br> 
     Can you walk?🚶‍♀️<br> 
     Can you dive?🤿<br> 
-    Can you jump?🤸‍♀️<br><br>
+    Can you jump?🤸‍♀️<br>
     [대답]<br>
     Yes, I can.<br>
-    No, I can’t.<br>
+    No, I can’t.
         ''', unsafe_allow_html=True)
 
     
