@@ -8,14 +8,16 @@ import re
 client = OpenAI(api_key=st.secrets["openai_api_key"])
 
 def generate_question():
-    questions = [
-        "Can you swim?",
-        "Can you sing?",
-        "Can you dance?",
-        "Can you run?",
-        "Can you walk?",
-        "Can you dive?",
-        "Can you jump?"
+    characters = ["Paul", "Jello", "Uju", "Bora", "Tina", "Khan", "Amy", "Eric"]
+    
+    questions = [f
+        "Can you swim?, {name}?",
+        "Can you sing?, {name}?",
+        "Can you dance?, {name}?",
+        "Can you run?, {name}?",
+        "Can you walk?, {name}?",
+        "Can you dive?, {name}?",
+        "Can you jump?, {name}?"
     ]
     
     answers = [
@@ -28,7 +30,7 @@ def generate_question():
         "{name}은 ...를 할 수 있나요?"
     ]
     
-    characters = ["Paul", "Jello", "Uju", "Bora", "Tina", "Khan", "Amy", "Eric"]
+    
     
     selected_question = random.choice(questions)
     selected_answer = random.choice(answers)
