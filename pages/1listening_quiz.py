@@ -8,26 +8,37 @@ import re
 client = OpenAI(api_key=st.secrets["openai_api_key"])
 
 def generate_question():
-    conversations = [
-        ("Look at the bird.🐤", "It’s small."),
-        ("Look at the lion.🦁", "It’s big."),
-        ("Look at the tiger.🐅", "It’s small."),
-        ("Look at the elephant.🐘", "It’s big."),
-        ("Look at the zebra.🦓", "It’s cute."),
-        ("Look at the giraffe.🦒", "It’s tall.")
-    ]
-    
     questions = [
-        "이 동물의 모습은 어떤가요?",
-        "어떤 동물에 대해 이야기 했나요?"
+        "Can you swim?",
+        "Can you sing?",
+        "Can you dance?",
+        "Can you run?",
+        "Can you walk?",
+        "Can you dive?",
+        "Can you jump?"
     ]
     
-    selected_conversation = random.choice(conversations)
+    answers = [
+        "Yes, I can.",
+        "No, I can't."
+    ]
+    
+    korean_questions = [
+        "무엇에 대해 이야기 했나요?",
+        "{name}은 ...를 할 수 있나요?"
+    ]
+    
+    characters = ["Paul", "Jello", "Uju", "Bora", "Tina", "Khan", "Amy", "Eric"]
+    
     selected_question = random.choice(questions)
+    selected_answer = random.choice(answers)
+    selected_korean_question = random.choice(korean_questions)
+    speaker_a = random.choice(characters)
+    speaker_b = random.choice([c for c in characters if c != speaker_a])
     
     key_expression = f"""
-A: {selected_conversation[0]}
-B: {selected_conversation[1]}
+A: {speaker_a}: {selected_question}
+B: {speaker_b}: {selected_answer}
 """
     prompt = f"""{key_expression}을 생성해주세요. 
     그 후 대화 내용에 관한 객관식 질문을 한국어로 만들어주세요.  
@@ -37,11 +48,11 @@ B: {selected_conversation[1]}
     B는 다음과 같이 한문장을 말하세요.
     형식:
     [영어 대화]
-    A: {selected_conversation[0]}
-    B: {selected_conversation[1]}
+    A: {speaker_a}: {selected_question}
+    B: {speaker_b}: {selected_answer}
 
     [한국어 질문]
-    조건: {selected_question}을 만들어야 합니다.
+    조건: {selected_korean_question.format(name=speaker_b)}을 만들어야 합니다.
     질문: (한국어로 된 질문) 이 때, 선택지는 한국어로 제공됩니다.
     A. (선택지)
     B. (선택지)
