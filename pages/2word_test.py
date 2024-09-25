@@ -7,16 +7,14 @@ client = OpenAI(api_key=st.secrets["openai_api_key"])
 
 # 단어 목록
 words = {
-    'big': '큰',
-    'bird': '새',
-    'cute': '귀여운',
-    'elephant': '코끼리',
-    'giraffe': '기린',
-    'lion': '사자',
-    'small': '작은',
-    'tall': '키 큰',
-    'tiger': '호랑이',
-    'zebra': '얼룩말'
+    'about': '~에 대하여',
+    'can': '할 수 있다',
+    'dance': '춤추다',
+    'dive': '다이빙하다',
+    'run': '달리다',
+    'sing': '노래하다',
+    'swim': '수영하다',
+    'walk': '걷다'
 }
 
 def generate_question():
