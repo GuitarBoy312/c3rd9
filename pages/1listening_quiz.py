@@ -10,14 +10,14 @@ client = OpenAI(api_key=st.secrets["openai_api_key"])
 def generate_question():
     characters = ["Paul", "Jello", "Uju", "Bora", "Tina", "Khan", "Amy", "Eric"]
     
-    questions = [f
-        "Can you swim?, {name}?",
-        "Can you sing?, {name}?",
-        "Can you dance?, {name}?",
-        "Can you run?, {name}?",
-        "Can you walk?, {name}?",
-        "Can you dive?, {name}?",
-        "Can you jump?, {name}?"
+    questions = [
+        "Can you swim, {name}?",
+        "Can you sing, {name}?",
+        "Can you dance, {name}?",
+        "Can you run, {name}?",
+        "Can you walk, {name}?",
+        "Can you dive, {name}?",
+        "Can you jump, {name}?"
     ]
     
     answers = [
@@ -30,16 +30,16 @@ def generate_question():
         "{name}은 ...를 할 수 있나요?"
     ]
     
-    
-    
     selected_question = random.choice(questions)
     selected_answer = random.choice(answers)
     selected_korean_question = random.choice(korean_questions)
     speaker_a = random.choice(characters)
     speaker_b = random.choice([c for c in characters if c != speaker_a])
     
+    formatted_question = selected_question.format(name=speaker_b)
+    
     key_expression = f"""
-A: {speaker_a}: {selected_question}
+A: {speaker_a}: {formatted_question}
 B: {speaker_b}: {selected_answer}
 """
     prompt = f"""{key_expression}을 생성해주세요. 
@@ -50,7 +50,7 @@ B: {speaker_b}: {selected_answer}
     B는 다음과 같이 한문장을 말하세요.
     형식:
     [영어 대화]
-    A: {speaker_a}: {selected_question}
+    A: {speaker_a}: {formatted_question}
     B: {speaker_b}: {selected_answer}
 
     [한국어 질문]
